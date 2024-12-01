@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: s3-example-using-credentials
+  name: s3-example-using-credentials
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-example-using-credentials
+  template:
+    metadata:
+      labels:
+        app: s3-example-using-credentials
+    spec:
+      containers:
+      - image: amazon/aws-cli:2.7.9
+        name: aws-cli
+        command: ["sh", "-c", "while true; do aws s3api list-objects --bucket $bucket; sleep 5; done"]
+        env:
+        - name: bucket
+          value: iam-on-k8s-sample-bucket
+        envFrom:
+        - secretRef:
+            name: aws-credentials
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128M

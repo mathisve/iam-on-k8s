@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: irsa-s3-example
+  name: irsa-s3-example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: irsa-s3-example
+  template:
+    metadata:
+      labels:
+        app: irsa-s3-example
+    spec:
+      serviceAccount: my-service-account
+      containers:
+      - image: amazon/aws-cli:2.7.9
+        name: aws-cli
+        command: ["sh", "-c", "while true; do aws s3api list-objects --bucket $bucket; sleep 5; done"]
+        env:
+        - name: bucket
+          value: iam-on-k8s-sample-bucket
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128M

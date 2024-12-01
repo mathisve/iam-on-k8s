@@ -1,0 +1,17 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: small-cluster
+  region: us-east-1
+  version: "1.31"
+
+managedNodeGroups:
+  - name: small-ng
+    instanceType: t3.small
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    volumeSize: 20
+    ssh:
+      allow: false # Disable SSH access for security (enable if needed)
